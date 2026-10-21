@@ -27,6 +27,9 @@ def main():
     print(f"Parking Spot: {ticket.spot_id}")
     print(f"Entry Time: {ticket.entry_time}")
 
+    # Show status after parking
+    parking_lot.show_status()
+
     # Exit the car
     completed_ticket = parking_lot.unpark_vehicle(ticket.ticket_id)
 
@@ -34,6 +37,9 @@ def main():
     print(f"Ticket ID: {completed_ticket.ticket_id}")
     print(f"Exit Time: {completed_ticket.exit_time}")
     print(f"Parking Fee: ₹{completed_ticket.fee:.2f}")
+
+    # Show status after exit
+    parking_lot.show_status()
 
 
 if __name__ == "__main__":

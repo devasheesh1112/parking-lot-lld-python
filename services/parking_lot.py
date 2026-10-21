@@ -67,3 +67,23 @@ class ParkingLot:
         del self.active_tickets[ticket_id]
 
         return ticket
+
+        
+    def show_status(self) -> None:
+        print("\n--- PARKING LOT STATUS ---")
+
+        for spot in self.spots:
+            status = "Available" if spot.is_available else "Occupied"
+            vehicle_number = (
+                spot.vehicle.license_plate
+                if spot.vehicle is not None
+                else "-"
+            )
+
+            print(
+                f"Spot: {spot.spot_id} | "
+                f"Type: {spot.supported_type.value} | "
+                f"Status: {status} | "
+                f"Vehicle: {vehicle_number}"
+            )
+
