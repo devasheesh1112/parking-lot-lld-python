@@ -12,6 +12,6 @@ class ParkingTicket:
         self.exit_time = None
         self.fee = 0.0
 
-    def close_ticket(self, fee: float) -> None:
-        self.exit_time = datetime.now()
+    def close_ticket(self, fee: float, exit_time: datetime) -> None:
+        self.exit_time = exit_time
         self.fee = fee

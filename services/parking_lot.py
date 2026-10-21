@@ -1,7 +1,10 @@
 
-from models.vehicle import Vehicle, VehicleType
+from datetime import datetime
+
+from models.vehicle import Vehicle
 from models.parking_spot import ParkingSpot
 from models.ticket import ParkingTicket
+from strategies.pricing_strategy import PricingStrategy
 
 
 class ParkingLot:
@@ -9,9 +12,9 @@ class ParkingLot:
         self.spots = spots
         self.active_tickets = {}
         self.ticket_counter = 1
+        self.pricing_strategy = PricingStrategy()
 
     def park_vehicle(self, vehicle: Vehicle) -> ParkingTicket:
-        # Find the first compatible available spot
         for spot in self.spots:
             if spot.can_park(vehicle):
                 spot.park(vehicle)
@@ -29,7 +32,8 @@ class ParkingLot:
                 return ticket
 
         raise ValueError(
-            f"No available spot for vehicle type: {vehicle.vehicle_type.value}"
+            f"No available spot for vehicle type: "
+            f"{vehicle.vehicle_type.value}"
         )
 
     def unpark_vehicle(self, ticket_id: str) -> ParkingTicket:
@@ -38,12 +42,28 @@ class ParkingLot:
         if ticket is None:
             raise ValueError("Invalid or inactive ticket")
 
-        for spot in self.spots:
-            if spot.spot_id == ticket.spot_id:
-                spot.remove_vehicle()
-                break
+        spot = next(
+            (
+                spot
+                for spot in self.spots
+                if spot.spot_id == ticket.spot_id
+            ),
+            None,
+        )
 
-        ticket.close_ticket(fee=0.0)
+        if spot is None:
+            raise ValueError("Parking spot not found")
+
+        exit_time = datetime.now()
+
+        fee = self.pricing_strategy.calculate_fee(
+            ticket.vehicle,
+            ticket.entry_time,
+            exit_time,
+        )
+
+        spot.remove_vehicle()
+        ticket.close_ticket(fee, exit_time)
         del self.active_tickets[ticket_id]
 
         return ticket
