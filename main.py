@@ -37,6 +37,7 @@ def main():
     print(f"Ticket ID: {completed_ticket.ticket_id}")
     print(f"Exit Time: {completed_ticket.exit_time}")
     print(f"Parking Fee: ₹{completed_ticket.fee:.2f}")
+    print("Welcome to Parking Lot Management System!")
 
     # Show status after exit
     parking_lot.show_status()
